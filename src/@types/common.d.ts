@@ -1,0 +1,3 @@
+interface PropsTest {
+  name: string;
+}
