@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Footer from 'src/components/Footer';
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
           <Link to="/user">User</Link>
         </li>
       </ul>
+      <Footer name={'kien'} />
     </div>
   );
 };

@@ -1,0 +1,10 @@
+@import 'src/styles/colors';
+
+.footer {
+  background: $primary-color;
+  display: inline-block;
+  button {
+    color: $primary-background;
+    background: #61dafb;
+  }
+}
