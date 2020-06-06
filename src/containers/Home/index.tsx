@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from 'src/components/Footer';
+import { DatePicker, Button } from 'antd';
 
 const Home = () => {
   return (
@@ -18,6 +19,9 @@ const Home = () => {
         </li>
       </ul>
       <Footer name={'kien'} />
+      <DatePicker />
+      <br />
+      <Button type={'primary'}>button antd</Button>
     </div>
   );
 };

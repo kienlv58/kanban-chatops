@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import routerMap from 'src/utils/routerMap';
 import Loading from 'src/components/Loading';
+import './App.less';
 
 const HomePage = React.lazy(() => import('src/containers/Home'));
 const UserPage = React.lazy(() => import('src/containers/User'));
