@@ -9,6 +9,7 @@ const HomePage = React.lazy(() => import('src/containers/Home'));
 const UserPage = React.lazy(() => import('src/containers/User'));
 const AboutPage = React.lazy(() => import('src/containers/About'));
 const NotFound = React.lazy(() => import('src/containers/NotFound'));
+const KanBanBoard = React.lazy(() => import('src/containers/KanBanList'));
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route exact path={routerMap.HOME}>
             <HomePage />
+          </Route>
+          <Route exact path={routerMap.BOARD}>
+            <KanBanBoard />
           </Route>
           <Route exact path={routerMap.NOT_FOUND}>
             <NotFound />

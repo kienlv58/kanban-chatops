@@ -1,0 +1,57 @@
+@import 'src/styles/colors';
+
+.header-footer-base {
+  display: flex;
+  width: 100%;
+  padding: 0px 20px;
+  background: $primary-color;
+}
+.dropdown-avatar {
+  margin-top: 10px;
+  min-width: 300px;
+  .user-name {
+    padding: 10px 0px;
+    border-bottom: 1px solid #cdc1d6;
+    .display-name {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      .user-icon {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+.app-layout {
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  background: #ffffff;
+  .ant-layout-header {
+    @extend .header-footer-base;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    .header-name {
+      flex: 1;
+      justify-content: center;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .avatar-user:hover {
+      cursor: pointer;
+    }
+    .avatar-user {
+      background: #87d068;
+    }
+  }
+  .ant-layout-content {
+    width: 100%;
+    max-width: 1200px;
+  }
+  .ant-layout-footer {
+    @extend .header-footer-base;
+  }
+}

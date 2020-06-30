@@ -1,0 +1,25 @@
+.test {
+  height: 80px;
+  background: red;
+}
+
+.home-page {
+  .header {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    .title-header {
+      flex: 1;
+      font-size: 36px;
+      font-weight: bold;
+    }
+  }
+  .card-description {
+    height: 100px;
+    overflow: auto;
+  }
+  .board-item:hover {
+    cursor: pointer;
+  }
+}

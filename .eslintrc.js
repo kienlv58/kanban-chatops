@@ -34,7 +34,7 @@ module.exports = {
     'import/imports-first': ['error', 'absolute-first'],
     'import/newline-after-import': 'error',
     'max-lines': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
-    'max-lines-per-function': ['error', { max: 50 }],
+    'max-lines-per-function': ['error', { max: 300 }],
     'no-console': 'off',
     'prefer-const': 'error',
     'react/boolean-prop-naming': 'error',

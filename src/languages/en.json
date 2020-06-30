@@ -1,3 +1,7 @@
 {
-  "name": "your name"
+  "name": "your name",
+  "appName": "Kanban ChatOps",
+  "signOut": "SignOut",
+  "addNewBoard": "Add New",
+  "yourBoard": "Your Board"
 }
