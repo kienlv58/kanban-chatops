@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button, Row, Input, Form } from 'antd';
 import { Droppable } from 'react-beautiful-dnd';
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
+import { createNewCard } from './kanbanSildeData';
 import CardItem from './CardItem';
 
 import './styles.scss';
@@ -12,6 +14,8 @@ interface Props {
 
 const List = ({ col }: Props) => {
   const [showFormAddNew, setShowFormAddNew] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
   const [form] = Form.useForm();
 
   const handleClickShowHideAddNew = () => {
@@ -19,9 +23,15 @@ const List = ({ col }: Props) => {
     setShowFormAddNew(prevState => !prevState);
   };
 
+  const handleAddNewCard = () => {
+    const title = form.getFieldValue('cardTitle');
+    dispatch(createNewCard({ listId: col.id, title }));
+    setShowFormAddNew(prevState => !prevState);
+  };
+
   const renderAddNewCard = () => {
     return (
-      <Form form={form} className={'card-add-new'}>
+      <Form form={form} className={'card-add-new'} onFinish={handleAddNewCard} autoComplete={'off'}>
         <Form.Item
           name="cardTitle"
           rules={[{ required: true, message: 'card title is required' }]}
@@ -34,6 +44,7 @@ const List = ({ col }: Props) => {
               <Button
                 className={'btn-new-card'}
                 type="primary"
+                onClick={handleAddNewCard}
                 disabled={
                   !form.isFieldsTouched(true) || form.getFieldsError().filter(({ errors }) => errors.length).length > 0
                 }>
@@ -56,7 +67,7 @@ const List = ({ col }: Props) => {
           <PlusOutlined />
         </Button>
       </Row>
-      <Droppable droppableId={col.title} key={col.title}>
+      <Droppable droppableId={col.id.toString()} key={col.id}>
         {(provided, snapshot) => {
           return (
             <>
@@ -68,9 +79,9 @@ const List = ({ col }: Props) => {
                 style={{
                   background: snapshot.isDraggingOver ? 'lightblue' : '#ebecf0',
                 }}>
-                {col.task.map((task, index) => {
-                  if (!task) return <></>;
-                  return <CardItem task={task} index={index} key={task.id} />;
+                {col.cards.map((card, index) => {
+                  if (!card) return <></>;
+                  return <CardItem card={card} index={index} key={card.id} listId={col.id} />;
                 })}
                 {provided.placeholder}
               </div>

@@ -2,14 +2,21 @@ interface PropsTest {
   name: string;
 }
 
-interface Task {
+interface CardItem {
   id: number;
+  listId: number;
   title: string;
-  label: string;
-  description: string;
+  position: number;
+  description?: string;
+  assigned?: string;
+  dueDate?: string;
+  label?: string;
 }
 
 interface ListItem {
+  id: number;
+  boardId: number;
   title: string;
-  task: Task[];
+  position: number;
+  cards: CardItem[];
 }
