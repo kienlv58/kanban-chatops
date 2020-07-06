@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { FieldTimeOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 import { Avatar, Row, Tag } from 'antd';
 import './styles.scss';
 import CardModal from './CardModal';
+import { selectLabelById } from './kanbanSildeData';
 
 interface Props {
   card: CardItem;
@@ -13,6 +15,7 @@ interface Props {
 
 const CardItem = ({ card, index, listId }: Props) => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
+  const label = useSelector(selectLabelById(card.labelId));
 
   const hideModal = () => {
     setIsShowModal(false);
@@ -39,9 +42,9 @@ const CardItem = ({ card, index, listId }: Props) => {
                       <FieldTimeOutlined /> {card.dueDate}
                     </Tag>
                   )}
-                  {card.label && (
-                    <Tag color="#f50" className={'card-label'}>
-                      {card.label}
+                  {label && (
+                    <Tag color={label.color} className={'card-label'}>
+                      {label.name}
                     </Tag>
                   )}
                 </Row>

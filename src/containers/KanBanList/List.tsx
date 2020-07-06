@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Row, Input, Form } from 'antd';
-import { Droppable } from 'react-beautiful-dnd';
+import { DraggableProvided, Droppable } from 'react-beautiful-dnd';
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { createNewCard } from './kanbanSildeData';
@@ -10,9 +10,10 @@ import './styles.scss';
 
 interface Props {
   col: ListItem;
+  dragProvided: DraggableProvided;
 }
 
-const List = ({ col }: Props) => {
+const List = ({ col, dragProvided }: Props) => {
   const [showFormAddNew, setShowFormAddNew] = useState<boolean>(false);
   const dispatch = useDispatch();
 
@@ -61,13 +62,13 @@ const List = ({ col }: Props) => {
 
   return (
     <div className={'wrapper-list'}>
-      <Row className={'title-list'}>
+      <Row className={'title-list'} {...dragProvided.dragHandleProps}>
         <label>{col.title}</label>
         <Button size={'middle'} className={'btn-new-card'} onClick={handleClickShowHideAddNew}>
           <PlusOutlined />
         </Button>
       </Row>
-      <Droppable droppableId={col.id.toString()} key={col.id}>
+      <Droppable droppableId={col.id.toString()} key={col.id} type={'CARD-LIST'} ignoreContainerClipping={true}>
         {(provided, snapshot) => {
           return (
             <>

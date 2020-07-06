@@ -12,7 +12,7 @@ export const listKanBan: ListItem[] = [
         description: 'This is description',
         assigned: 'Kienlv',
         dueDate: '20/11/2010',
-        label: 'todo',
+        labelId: 1,
         position: 0,
       },
     ],
@@ -30,7 +30,7 @@ export const listKanBan: ListItem[] = [
         description: 'This is description',
         assigned: 'Kienlv',
         dueDate: '20/11/2010',
-        label: 'doing',
+        labelId: 1,
         position: 0,
       },
       {
@@ -40,9 +40,15 @@ export const listKanBan: ListItem[] = [
         description: 'This is description',
         assigned: 'Kienlv',
         dueDate: '20/11/2010',
-        label: 'doing',
+        labelId: 1,
         position: 1,
       },
     ],
   },
+];
+
+export const labels: LabelItem[] = [
+  { id: 1, name: 'todo', color: '#f50' },
+  { id: 2, name: 'doing', color: '#2db7f5' },
+  { id: 3, name: 'done', color: '#87d068' },
 ];
