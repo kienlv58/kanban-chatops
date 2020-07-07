@@ -13,7 +13,7 @@ interface CardItem {
   labelId?: number;
 }
 
-interface ListItem {
+interface ColumnKanBan {
   id: number;
   boardId: number;
   title: string;

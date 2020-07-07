@@ -84,23 +84,6 @@ const Home = () => {
           split
         />
       </Row>
-
-      {/*this is Home page*/}
-      {/*<ul>*/}
-      {/*  <li>*/}
-      {/*    <Link to="/">Home</Link>*/}
-      {/*  </li>*/}
-      {/*  <li>*/}
-      {/*    <Link to="/about">About</Link>*/}
-      {/*  </li>*/}
-      {/*  <li>*/}
-      {/*    <Link to="/user">User</Link>*/}
-      {/*  </li>*/}
-      {/*</ul>*/}
-      {/*<DatePicker />*/}
-      {/*<br />*/}
-      {/*<Button type={'primary'}>button antd</Button>*/}
-      {/*<div className={'test'}>dasdsd</div>*/}
     </AppLayout>
   );
 };

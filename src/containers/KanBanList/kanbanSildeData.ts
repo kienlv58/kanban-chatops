@@ -11,7 +11,7 @@ import { labels, listKanBan } from './fakeData';
 
 interface KanBanData {
   boardId?: number;
-  listData: ListItem[];
+  listData: ColumnKanBan[];
   listLabel: LabelItem[];
 }
 
@@ -34,7 +34,18 @@ const homeDataSlice = createSlice({
     updateListData(state, action: PayloadAction<DropResult>) {
       console.log('result', action.payload);
       const { destination, source, draggableId } = action.payload;
-      if (destination && destination?.droppableId !== source.droppableId) {
+      const desIndex = destination?.index;
+      const sourceIndex = source.index;
+      if (
+        action.payload.type === 'COLUMN' &&
+        desIndex !== undefined &&
+        sourceIndex !== undefined &&
+        desIndex !== sourceIndex
+      ) {
+        const desItem = state.listData[desIndex];
+        state.listData[desIndex] = state.listData[sourceIndex];
+        state.listData[sourceIndex] = desItem;
+      } else if (destination && destination?.droppableId !== source.droppableId) {
         const listSourceIndex = state.listData.findIndex(item => {
           return item.id.toString() === source.droppableId;
         });
@@ -79,10 +90,26 @@ const homeDataSlice = createSlice({
         findListToUpdate.cards.splice(findIndexCardDelete, 1);
       }
     },
+    addNewColumn(state, action: PayloadAction<{ title: string }>) {
+      state.listData.push({
+        id: Math.random(),
+        boardId: state.boardId || 0,
+        title: action.payload.title,
+        position: maxBy(state.listData, 'position')?.position || 0 + 1,
+        cards: [],
+      });
+    },
   },
 });
 
-export const { setKanBanData, updateListData, createNewCard, updateCard, deleteCard } = homeDataSlice.actions;
+export const {
+  setKanBanData,
+  updateListData,
+  createNewCard,
+  updateCard,
+  deleteCard,
+  addNewColumn,
+} = homeDataSlice.actions;
 
 export default homeDataSlice.reducer;
 
