@@ -4,19 +4,21 @@ import { AppThunk } from 'redux/store';
 import { RootState } from 'redux/rootReducer';
 import { maxBy } from 'lodash';
 // import { axiosInstance } from 'src/utils/fetchHelpers';
-import { listKanBan } from 'src/containers/KanBanList/fakeData';
 import { DropResult } from 'react-beautiful-dnd';
+import { labels, listKanBan } from './fakeData';
 
 /* ----DEFINE_ACTION_REDUCER----*/
 
 interface KanBanData {
   boardId?: number;
-  listData: ListItem[];
+  listData: ColumnKanBan[];
+  listLabel: LabelItem[];
 }
 
 const initialState: KanBanData = {
   boardId: undefined,
   listData: [],
+  listLabel: [],
 };
 
 const homeDataSlice = createSlice({
@@ -26,11 +28,24 @@ const homeDataSlice = createSlice({
     setKanBanData(state, action: PayloadAction<KanBanData>) {
       state.boardId = action.payload.boardId;
       state.listData = action.payload.listData;
+      state.listLabel = action.payload.listLabel;
     },
+
     updateListData(state, action: PayloadAction<DropResult>) {
       console.log('result', action.payload);
       const { destination, source, draggableId } = action.payload;
-      if (destination && destination?.droppableId !== source.droppableId) {
+      const desIndex = destination?.index;
+      const sourceIndex = source.index;
+      if (
+        action.payload.type === 'COLUMN' &&
+        desIndex !== undefined &&
+        sourceIndex !== undefined &&
+        desIndex !== sourceIndex
+      ) {
+        const desItem = state.listData[desIndex];
+        state.listData[desIndex] = state.listData[sourceIndex];
+        state.listData[sourceIndex] = desItem;
+      } else if (destination && destination?.droppableId !== source.droppableId) {
         const listSourceIndex = state.listData.findIndex(item => {
           return item.id.toString() === source.droppableId;
         });
@@ -68,10 +83,33 @@ const homeDataSlice = createSlice({
         }
       }
     },
+    deleteCard(state, action: PayloadAction<{ listId: number; cardId: number }>) {
+      const findListToUpdate = state.listData.find(item => item.id === action.payload.listId);
+      if (findListToUpdate) {
+        const findIndexCardDelete = findListToUpdate.cards.findIndex(item => item.id === action.payload.cardId);
+        findListToUpdate.cards.splice(findIndexCardDelete, 1);
+      }
+    },
+    addNewColumn(state, action: PayloadAction<{ title: string }>) {
+      state.listData.push({
+        id: Math.random(),
+        boardId: state.boardId || 0,
+        title: action.payload.title,
+        position: maxBy(state.listData, 'position')?.position || 0 + 1,
+        cards: [],
+      });
+    },
   },
 });
 
-export const { setKanBanData, updateListData, createNewCard, updateCard } = homeDataSlice.actions;
+export const {
+  setKanBanData,
+  updateListData,
+  createNewCard,
+  updateCard,
+  deleteCard,
+  addNewColumn,
+} = homeDataSlice.actions;
 
 export default homeDataSlice.reducer;
 
@@ -82,7 +120,7 @@ export const fetchDataKanBanList = (): AppThunk => async dispatch => {
     // const data = await fetch(process.env.REACT_APP_BASE_URL + userName).then(response => response.json());
     // const { data } = await axiosInstance.get<UserGithub>(userName);
 
-    dispatch(setKanBanData({ boardId: 1, listData: listKanBan }));
+    dispatch(setKanBanData({ boardId: 1, listData: listKanBan, listLabel: labels }));
   } catch (e) {
     console.log('error', e);
   }
@@ -93,3 +131,6 @@ export const fetchDataKanBanList = (): AppThunk => async dispatch => {
 export const selectKanBanData = (state: RootState): KanBanData => state.kanBanData;
 
 export const selectListData = createSelector(selectKanBanData, (kanBanData: KanBanData) => kanBanData.listData);
+export const selectListLabel = createSelector(selectKanBanData, (kanBanData: KanBanData) => kanBanData.listLabel);
+export const selectLabelById = (labelId?: number) =>
+  createSelector(selectListLabel, (labels: LabelItem[]) => labels.find(item => item.id === labelId));
