@@ -1,8 +1,3 @@
-.test {
-  height: 80px;
-  background: red;
-}
-
 .home-page {
   .header {
     justify-content: center;
@@ -14,12 +9,51 @@
       font-size: 36px;
       font-weight: bold;
     }
+    .btn-add-new {
+      background-color: #ffffff;
+      border: 1px solid lightgrey;
+      border-radius: 2px;
+      box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2);
+    }
   }
   .card-description {
     height: 100px;
     overflow: auto;
   }
-  .board-item:hover {
-    cursor: pointer;
+
+  .board-item {
+    .item-header {
+      justify-content: space-between;
+      align-items: center;
+      .icon-more {
+        padding: 2px 2px;
+        font-size: 20px;
+      }
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+    .ant-card {
+      background-color: #ffffff;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.add-new-board-modal {
+  .modal-footer-board {
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0px 10px;
+
+    .form-submit {
+      justify-content: center;
+      align-items: center;
+      margin-left: 5px;
+      margin-bottom: 0px;
+    }
   }
 }

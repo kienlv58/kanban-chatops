@@ -1,10 +1,12 @@
 import React, { ReactNode } from 'react';
-import { Layout, Avatar, Row, Dropdown, Menu, Col } from 'antd';
-import { UserOutlined, CloseOutlined, LoginOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Row, Dropdown, Menu, Col, Input } from 'antd';
+import { UserOutlined, CloseOutlined, LoginOutlined, HomeOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './styles.scss';
 
 const { Header, Content, Footer } = Layout;
+const { Search } = Input;
 
 interface Props {
   children: ReactNode;
@@ -12,6 +14,7 @@ interface Props {
 
 const AppLayout = (props: Props) => {
   const { t } = useTranslation();
+  const history = useHistory();
 
   const menu = (
     <Menu className={'dropdown-avatar'}>
@@ -33,7 +36,22 @@ const AppLayout = (props: Props) => {
   return (
     <Layout className={'app-layout'}>
       <Header>
-        <Row className={'header-name'}>{t('appName')}</Row>
+        <Row>
+          <HomeOutlined className={'icon-home'} onClick={() => history.push('/')} />
+          <Search
+            placeholder="input search text"
+            className={'search'}
+            size={'small'}
+            onSearch={value => console.log(value)}
+          />
+        </Row>
+        <Row className={'header-name'}>
+          <img
+            src={require('src/components/AppLayout/Logo.png')}
+            style={{ width: 50, height: 50, borderRadius: 30, backgroundColor: 'white', marginRight: 5 }}
+          />
+          <Row>{t('appName')}</Row>
+        </Row>
         <Dropdown overlay={menu} trigger={['click']} className={'abc'}>
           <Avatar
             size="large"
