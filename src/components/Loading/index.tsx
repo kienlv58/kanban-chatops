@@ -1,7 +1,12 @@
 import React from 'react';
+import { Spin, Row } from 'antd';
 import './styles.scss';
 
 const Loading = () => {
-  return <div className={'loading'}>loading ....</div>;
+  return (
+    <Row className={'loading'}>
+      <Spin />
+    </Row>
+  );
 };
 export default Loading;

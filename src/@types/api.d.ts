@@ -40,3 +40,49 @@ interface ErrorResponseType {
   message: string;
   status: number;
 }
+
+interface Board {
+  id: number;
+  title: string;
+  description: string;
+  created_by: string;
+  updated_by?: string;
+  deleted_by?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Links {
+  first: string;
+  last: string;
+  prev?: string;
+  next?: string;
+}
+
+interface Meta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+interface ListResponse<T> {
+  data: T[];
+  links: Links;
+  meta: Meta;
+}
+
+interface DataModal {
+  visible: boolean;
+  board?: Board;
+}
+
+interface PostBoardData {
+  title: string;
+  description: string;
+  created_by: string;
+}

@@ -8,10 +8,12 @@ import { axiosInstance } from 'src/utils/fetchHelpers';
 
 interface HomeData {
   user: UserGithub | null;
+  listBoard?: ListResponse<Board>;
 }
 
 const initialState: HomeData = {
   user: null,
+  listBoard: undefined,
 };
 
 const homeDataSlice = createSlice({
@@ -21,10 +23,13 @@ const homeDataSlice = createSlice({
     setCurrentUser(state, action: PayloadAction<UserGithub>) {
       state.user = action.payload;
     },
+    updateListBoard(state, action: PayloadAction<ListResponse<Board>>) {
+      state.listBoard = action.payload;
+    },
   },
 });
 
-export const { setCurrentUser } = homeDataSlice.actions;
+export const { setCurrentUser, updateListBoard } = homeDataSlice.actions;
 
 export default homeDataSlice.reducer;
 
@@ -45,3 +50,4 @@ export const fetchUserInfo = (userName: string): AppThunk => async dispatch => {
 export const selectHomeData = (state: RootState): HomeData => state.homeData;
 
 export const selectUserName = createSelector(selectHomeData, (homeData: HomeData) => homeData?.user?.name);
+export const selectListBoard = createSelector(selectHomeData, (homeData: HomeData) => homeData.listBoard);
