@@ -53,6 +53,20 @@ interface Board {
   updated_at: string;
 }
 
+interface ColumnKanBan {
+  id: number;
+  board_id: number;
+  title: string;
+  position: number;
+  created_by: string;
+  updated_by?: string;
+  deleted_by?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at: string;
+  cards: CardItem[];
+}
+
 interface Links {
   first: string;
   last: string;
@@ -84,5 +98,11 @@ interface DataModal {
 interface PostBoardData {
   title: string;
   description: string;
+  created_by: string;
+}
+
+interface PostNewColumnKanBan {
+  board_id: number;
+  title: string;
   created_by: string;
 }

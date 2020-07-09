@@ -29,7 +29,7 @@
   background: #ffffff;
 
   .icon-home {
-    font-size: 30px;
+    font-size: 25px;
     color: white;
     background-color: #42a5f5;
     padding: 5px;
@@ -50,8 +50,10 @@
     }
     .search {
       width: 200px;
+      height: 30px;
       margin-left: 5px;
       border-radius: 5px;
+      align-self: center;
     }
 
     .avatar-user:hover {

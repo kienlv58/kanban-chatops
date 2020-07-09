@@ -69,7 +69,10 @@ const Home = () => {
       <Row className={'home-page'}>
         <Row className={'header'}>
           <Col className={'title-header'}>{t('yourBoard')}</Col>
-          <Button className={"btn-add-new"} size={'large'} onClick={() => setDataModal({ visible: true, board: undefined })}>
+          <Button
+            className={'btn-add-new'}
+            size={'large'}
+            onClick={() => setDataModal({ visible: true, board: undefined })}>
             <PlusOutlined />
             {t('addNewBoard')}
           </Button>

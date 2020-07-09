@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 import { AppThunk } from 'redux/store';
 import { RootState } from 'redux/rootReducer';
+import moment from 'moment';
 import { maxBy } from 'lodash';
 // import { axiosInstance } from 'src/utils/fetchHelpers';
 import { DropResult } from 'react-beautiful-dnd';
@@ -65,6 +66,7 @@ const homeDataSlice = createSlice({
     createNewCard(state, action: PayloadAction<{ listId: number; title: string }>) {
       const findListToUpdate = state.listData.find(item => item.id === action.payload.listId);
       if (findListToUpdate) {
+        if (!findListToUpdate.cards) findListToUpdate.cards = [];
         findListToUpdate.cards.push({
           id: Math.random(),
           listId: action.payload.listId,
@@ -93,11 +95,19 @@ const homeDataSlice = createSlice({
     addNewColumn(state, action: PayloadAction<{ title: string }>) {
       state.listData.push({
         id: Math.random(),
-        boardId: state.boardId || 0,
+        board_id: state.boardId || 0,
         title: action.payload.title,
         position: maxBy(state.listData, 'position')?.position || 0 + 1,
         cards: [],
+        created_by: 'Kienlv',
+        created_at: moment().format('DD/MM/YYYY'),
+        updated_at: moment().format('DD/MM/YYYY'),
       });
+    },
+    clearData(state, action: PayloadAction) {
+      state.boardId = undefined;
+      state.listData = [];
+      state.listLabel = [];
     },
   },
 });
@@ -109,6 +119,7 @@ export const {
   updateCard,
   deleteCard,
   addNewColumn,
+  clearData,
 } = homeDataSlice.actions;
 
 export default homeDataSlice.reducer;

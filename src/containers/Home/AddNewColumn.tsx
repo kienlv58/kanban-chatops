@@ -12,10 +12,15 @@ const AddNewBoard = ({ dataModal, setDataModal }: Props) => {
   const { createNewBoard, editBoard } = useFetchBoard();
 
   const handleClickOk = () => {
-    const title = form.getFieldValue('boardTitle');
-    const description = form.getFieldValue('boardDescription');
+    const title = form.getFieldValue('boardTitle') || dataModal?.board?.title;
+    const description = form.getFieldValue('boardDescription') || dataModal?.board?.description;
+
     if (dataModal.board) {
-      editBoard(dataModal.board.id, { title, description, created_by: 'kienlv' });
+      editBoard(dataModal.board.id, {
+        title,
+        description,
+        created_by: 'kienlv',
+      });
     } else {
       createNewBoard({ title, description, created_by: 'kienlv' });
     }

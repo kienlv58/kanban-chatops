@@ -13,13 +13,13 @@ interface CardItem {
   labelId?: number;
 }
 
-interface ColumnKanBan {
-  id: number;
-  boardId: number;
-  title: string;
-  position: number;
-  cards: CardItem[];
-}
+// interface ColumnKanBan {
+//   id: number;
+//   boardId: number;
+//   title: string;
+//   position: number;
+//   cards: CardItem[];
+// }
 
 interface LabelItem {
   id: number;
