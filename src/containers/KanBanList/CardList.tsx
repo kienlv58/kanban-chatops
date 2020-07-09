@@ -29,7 +29,7 @@ interface Props {
   children: ReactNode;
 }
 
-const CardList = ({ listId, listType, cards, style, children }: Props) => {
+const CardList = ({ listId, listType, cards = [], style, children }: Props) => {
   return (
     <Droppable droppableId={listId} type={listType}>
       {(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => (

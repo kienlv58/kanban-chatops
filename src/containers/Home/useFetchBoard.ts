@@ -7,12 +7,10 @@ import { updateListBoard } from './homeSildeData';
 
 const useFetchBoard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [test, setTest] = useState();
   const dispatch = useDispatch();
 
   const fetchListBoard = async () => {
     try {
-      setTest(Math.random);
       setIsLoading(true);
       const { data } = await axiosInstance.get<ListResponse<Board>>(apiMap.board, {
         params: {
@@ -64,7 +62,7 @@ const useFetchBoard = () => {
     }
   };
 
-  return { isLoading, fetchListBoard, createNewBoard, editBoard, deleteBoard, test };
+  return { isLoading, fetchListBoard, createNewBoard, editBoard, deleteBoard };
 };
 
 export default useFetchBoard;

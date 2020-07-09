@@ -50,7 +50,7 @@ const AppLayout = (props: Props) => {
             src={require('src/components/AppLayout/Logo.png')}
             style={{ width: 50, height: 50, borderRadius: 30, backgroundColor: 'white', marginRight: 5 }}
           />
-          <Row>{t('appName')}</Row>
+          <Row onClick={() => history.push('/')}>{t('appName')}</Row>
         </Row>
         <Dropdown overlay={menu} trigger={['click']} className={'abc'}>
           <Avatar

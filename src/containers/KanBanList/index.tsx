@@ -7,7 +7,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import AppLayout from '../../components/AppLayout';
 import './styles.scss';
-import { selectListData, updateListData, fetchDataKanBanList } from './kanbanSildeData';
+import { selectListData, updateListData, clearData } from './kanbanSildeData';
+import useFetchKanBanList from './useFetchKanBanList';
 import Board from './Board';
 import AddNewColumn from './AddNewColumn';
 
@@ -17,9 +18,13 @@ const KanBanList = () => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { fetchListKanBan } = useFetchKanBanList();
 
   useEffect(() => {
-    dispatch(fetchDataKanBanList());
+    if (params.boardId) fetchListKanBan(Number(params.boardId));
+    return () => {
+      dispatch(clearData());
+    };
   }, []);
 
   const handleDragEnd = (result: DropResult) => {
@@ -30,7 +35,7 @@ const KanBanList = () => {
     <AppLayout>
       <Row className={'kanban-header'}>
         <Col className={'board-name'}> Board {params.boardId}</Col>
-        <Button size={'large'} onClick={() => setIsShowModal(true)}>
+        <Button size={'large'} onClick={() => setIsShowModal(true)} className={'btn-add-new'}>
           <PlusOutlined />
           {t('addNewBoard')}
         </Button>
