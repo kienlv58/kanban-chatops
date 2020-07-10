@@ -23,7 +23,7 @@ const Column = ({ index, column }: Props) => {
         <div className={'container'} {...provided.draggableProps} ref={provided.innerRef}>
           <Header
             provided={provided}
-            title={column.title}
+            column={column}
             isDragging={snapshot.isDragging}
             handleClickShowHideAddNew={handleClickShowHideFormAddNew}
           />

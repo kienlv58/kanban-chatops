@@ -43,9 +43,9 @@ const homeDataSlice = createSlice({
         sourceIndex !== undefined &&
         desIndex !== sourceIndex
       ) {
-        const desItem = state.listData[desIndex];
-        state.listData[desIndex] = state.listData[sourceIndex];
-        state.listData[sourceIndex] = desItem;
+        const [sourceItem] = state.listData.splice(sourceIndex, 1);
+
+        state.listData.splice(desIndex, 0, sourceItem);
       } else if (destination && destination?.droppableId !== source.droppableId) {
         const listSourceIndex = state.listData.findIndex(item => {
           return item.id.toString() === source.droppableId;
@@ -66,7 +66,6 @@ const homeDataSlice = createSlice({
     createNewCard(state, action: PayloadAction<{ listId: number; title: string }>) {
       const findListToUpdate = state.listData.find(item => item.id === action.payload.listId);
       if (findListToUpdate) {
-        if (!findListToUpdate.cards) findListToUpdate.cards = [];
         findListToUpdate.cards.push({
           id: Math.random(),
           listId: action.payload.listId,

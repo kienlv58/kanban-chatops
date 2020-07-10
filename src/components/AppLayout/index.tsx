@@ -3,13 +3,15 @@ import { Layout, Avatar, Row, Dropdown, Menu, Col, Input } from 'antd';
 import { UserOutlined, CloseOutlined, LoginOutlined, HomeOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
 import './styles.scss';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 const { Search } = Input;
 
 interface Props {
   children: ReactNode;
+  title?: string;
 }
 
 const AppLayout = (props: Props) => {
@@ -35,6 +37,11 @@ const AppLayout = (props: Props) => {
 
   return (
     <Layout className={'app-layout'}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{props.title || process.env.REACT_APP_NAME}</title>
+        <meta name="description" content="KanBan ChatOps application" />
+      </Helmet>
       <Header>
         <Row>
           <HomeOutlined className={'icon-home'} onClick={() => history.push('/')} />
@@ -45,7 +52,7 @@ const AppLayout = (props: Props) => {
             onSearch={value => console.log(value)}
           />
         </Row>
-        <Row className={'header-name'}>
+        <Row className={'header-name'} onClick={() => history.push('/')}>
           <img
             src={require('src/components/AppLayout/Logo.png')}
             style={{ width: 50, height: 50, borderRadius: 30, backgroundColor: 'white', marginRight: 5 }}
@@ -63,7 +70,7 @@ const AppLayout = (props: Props) => {
         </Dropdown>
       </Header>
       <Content>{props.children}</Content>
-      <Footer>footer</Footer>
+      {/*<Footer>footer</Footer>*/}
     </Layout>
   );
 };

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Input, Row, Form, Button } from 'antd';
 import useFetchBoard from './useFetchBoard';
+
+const { TextArea } = Input;
 
 interface Props {
   dataModal: DataModal;
@@ -10,6 +12,13 @@ interface Props {
 const AddNewBoard = ({ dataModal, setDataModal }: Props) => {
   const [form] = Form.useForm();
   const { createNewBoard, editBoard } = useFetchBoard();
+
+  useEffect(() => {
+    form.setFields([
+      { name: 'boardTitle', value: dataModal.board?.title },
+      { name: 'boardDescription', value: dataModal.board?.description },
+    ]);
+  }, [dataModal.board]);
 
   const handleClickOk = () => {
     const title = form.getFieldValue('boardTitle') || dataModal?.board?.title;
@@ -24,13 +33,11 @@ const AddNewBoard = ({ dataModal, setDataModal }: Props) => {
     } else {
       createNewBoard({ title, description, created_by: 'kienlv' });
     }
-    form.resetFields(['boardTitle', 'boardDescription']);
     setDataModal({ visible: false, board: undefined });
   };
 
   const handleCancelModal = () => {
     setDataModal({ visible: false, board: undefined });
-    form.resetFields(['boardTitle', 'boardDescription']);
   };
 
   const renderFooterModal = () => (
@@ -67,16 +74,18 @@ const AddNewBoard = ({ dataModal, setDataModal }: Props) => {
         <label>Title:</label>
         <Form.Item
           name="boardTitle"
+          initialValue={dataModal.board?.title}
           rules={[{ required: true, message: 'board title is required' }]}
           className={'form-item-board'}>
-          <Input placeholder={'Enter title for this board'} defaultValue={dataModal.board?.title} />
+          <Input placeholder={'Enter title for this board'} />
         </Form.Item>
         <label>Description:</label>
         <Form.Item
           name="boardDescription"
+          initialValue={dataModal.board?.description}
           rules={[{ required: true, message: 'board description is required' }]}
           className={'form-item-board'}>
-          <Input placeholder={'Enter description for this board'} defaultValue={dataModal.board?.description} />
+          <TextArea placeholder={'Enter description for this board'} rows={5} maxLength={255} />
         </Form.Item>
       </Modal>
     </Form>

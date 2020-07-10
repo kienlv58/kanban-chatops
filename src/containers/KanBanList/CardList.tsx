@@ -17,7 +17,7 @@ const getBackgroundColor = (isDraggingOver: boolean, isDraggingFrom: boolean): s
   if (isDraggingFrom) {
     return '#cecbd2';
   }
-  return '#dea8b7';
+  return 'rgba(232, 232, 232, 0.71)';
 };
 
 interface Props {
