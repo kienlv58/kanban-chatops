@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { List, Card, Row, Col, Button, Dropdown, Menu, Skeleton } from 'antd';
+import { List, Card, Row, Col, Button, Dropdown, Menu, Skeleton, Modal } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
-import { PlusOutlined, MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, MoreOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,8 @@ import AppLayout from '../../components/AppLayout';
 import AddNewBoard from './AddNewColumn';
 import useFetchBoard from './useFetchBoard';
 import { selectListBoard } from './homeSildeData';
+
+const { confirm } = Modal;
 
 const Home = () => {
   const { isLoading, fetchListBoard, deleteBoard } = useFetchBoard();
@@ -22,6 +24,21 @@ const Home = () => {
 
   const { t } = useTranslation();
 
+  const handleDeleteBoard = (id: number) => {
+    confirm({
+      title: 'Are you sure delete this board?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        return deleteBoard(id);
+      },
+      // onCancel() {},
+    });
+  };
+
   const menu = (item: Board) => (
     <Menu
       className={'dropdown-menu'}
@@ -29,7 +46,7 @@ const Home = () => {
         param.domEvent.preventDefault();
         if (param.key === '1') setDataModal({ visible: true, board: item });
         else {
-          deleteBoard(item.id);
+          handleDeleteBoard(item.id);
         }
       }}>
       <Menu.Item key="1" icon={<EditOutlined />}>
@@ -55,7 +72,7 @@ const Home = () => {
   const renderItem = (item: Board): ReactNode => {
     return (
       <List.Item className={'board-item'}>
-        <Link to={`/board/${item.id}`}>
+        <Link to={`/board/${item.id}/${item.title}`}>
           <Card title={renderHeaderItem(item)}>
             <Row className={'card-description'}>{item.description}</Row>
           </Card>

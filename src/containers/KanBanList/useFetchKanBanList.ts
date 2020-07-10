@@ -19,7 +19,8 @@ const useFetchKanBanList = () => {
         },
       });
       // dispatch(updateListBoard(data));
-      dispatch(setKanBanData({ boardId: 1, listData: data.data, listLabel: labels }));
+      const transformData = data.data.map(item => ({ ...item, cards: item.cards || [] }));
+      dispatch(setKanBanData({ boardId: 1, listData: transformData, listLabel: labels }));
       console.log('data fetch list', data);
     } catch (e) {
       console.log(e);
@@ -41,7 +42,7 @@ const useFetchKanBanList = () => {
     }
   };
 
-  const editKanBanList = async (boardId: number, listId: number, bodyData: PostBoardData) => {
+  const editKanBanList = async (boardId: number, listId: number, bodyData: Partial<PostNewColumnKanBan>) => {
     try {
       const { data } = await axiosInstance.put<ListResponse<ColumnKanBan>>(`${apiMap.list}/${listId}`, bodyData);
       console.log('data put', data);

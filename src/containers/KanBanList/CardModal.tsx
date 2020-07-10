@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Input, Row, Col, Button, Tag, Typography, Descriptions, Modal, Form, Dropdown, Menu, DatePicker } from 'antd';
-import { UserOutlined, TagOutlined, FieldTimeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  TagOutlined,
+  FieldTimeOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectLabelById, selectListLabel, updateCard, deleteCard } from './kanbanSildeData';
 import './styles.scss';
 
 const { Link } = Typography;
 const { TextArea } = Input;
+
+const { confirm } = Modal;
 
 interface Props {
   card: CardItem;
@@ -48,6 +57,22 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
         <Menu.Item key={'maiht'}>maiht</Menu.Item>
       </Menu>
     );
+  };
+
+  const handleDeleteCard = () => {
+    confirm({
+      title: 'Are you sure delete this cardd?',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        dispatch(deleteCard({ listId, cardId: card.id }));
+        resetModal();
+      },
+      // onCancel() {},
+    });
   };
 
   const renderListLabel = () => {
@@ -161,13 +186,7 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
         </Row>
 
         <label>ACTIONS</label>
-        <Button
-          className={'btn-right'}
-          icon={<DeleteOutlined />}
-          onClick={() => {
-            dispatch(deleteCard({ listId, cardId: card.id }));
-            resetModal();
-          }}>
+        <Button className={'btn-right'} icon={<DeleteOutlined />} onClick={handleDeleteCard}>
           Delete Card
         </Button>
       </Col>

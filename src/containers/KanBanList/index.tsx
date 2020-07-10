@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Row, Skeleton } from 'antd';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { PlusOutlined } from '@ant-design/icons';
@@ -13,12 +13,12 @@ import Board from './Board';
 import AddNewColumn from './AddNewColumn';
 
 const KanBanList = () => {
-  const params = useParams<{ boardId?: string }>();
+  const params = useParams<{ boardId?: string; boardName?: string }>();
   const listData = useSelector(selectListData);
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { fetchListKanBan } = useFetchKanBanList();
+  const { fetchListKanBan, isLoading } = useFetchKanBanList();
 
   useEffect(() => {
     if (params.boardId) fetchListKanBan(Number(params.boardId));
@@ -32,19 +32,23 @@ const KanBanList = () => {
   };
 
   return (
-    <AppLayout>
+    <AppLayout title={params.boardName}>
       <Row className={'kanban-header'}>
-        <Col className={'board-name'}> Board {params.boardId}</Col>
+        <Col className={'board-name'}> Board {params.boardName}</Col>
         <Button size={'large'} onClick={() => setIsShowModal(true)} className={'btn-add-new'}>
           <PlusOutlined />
           {t('addNewBoard')}
         </Button>
       </Row>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Row className={'parent-container'}>
-          <Board columns={listData} />
-        </Row>
-      </DragDropContext>
+      {isLoading ? (
+        <Skeleton />
+      ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Row className={'parent-container'}>
+            <Board columns={listData} />
+          </Row>
+        </DragDropContext>
+      )}
       <AddNewColumn isShowModal={isShowModal} setIsShowModal={setIsShowModal} />
     </AppLayout>
   );
