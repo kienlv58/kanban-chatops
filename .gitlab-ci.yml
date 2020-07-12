@@ -1,0 +1,73 @@
+stages:
+  - test
+  - build
+  - deploy
+
+  # Using the node image to build the React app
+image: node:latest
+
+variables:
+  PUBLIC_URL: /
+
+# Cache node modules - speeds up future builds
+cache:
+  paths:
+    - node_modules
+
+before_script:
+  - apt-get update -y && apt-get install -y yarn
+  - ls -la .
+  - yarn install
+  - npm install -g prettier
+
+lint-source:
+  stage: test
+  script:
+    - prettier --write "src/**/*.{js,jsx,ts,tsx,json,scss,md}"
+    - yarn lint:eslint:fix -- .
+  tags:
+    - mbase-app-runner
+
+tsc-source:
+  stage: test
+  script:
+    - yarn tsc
+  tags:
+    - mbase-app-runner
+
+build:
+  stage: build
+  script:
+    - yarn build
+  artifacts:
+    paths:
+      - build
+  only:
+    - develop
+  tags:
+    - mbase-app-runner
+
+deploy:
+  stage: deploy
+  dependencies:
+    - build
+  before_script:
+    - apt-get update -y && apt-get install -y rsync
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+  script:
+    - echo "Deploying to server"
+    - ssh -i ~/.ssh/gitlab -o StrictHostKeyChecking=no USERNAME@IP_HOST -p PORT
+    - rsync -avz --progress -a -e "ssh -p PORT" build/ USERNAME@IP_HOST:/var/www/kanban-chatops/build
+    - echo "Deployed"
+  environment:
+    name: production
+  only:
+    - develop
+  tags:
+    - mbase-app-runner
