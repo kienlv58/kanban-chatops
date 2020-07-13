@@ -52,14 +52,12 @@ deploy:
   dependencies:
     - build
   before_script:
-    - apt-get update -y && apt-get install -y rsync
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - apt-get update -y && apt-get install -y rsync openssh-client
     - eval $(ssh-agent -s)
+    - ssh-add <(echo "$STG_SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 700 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   script:
     - echo "Deploying to server"
     - ssh -i ~/.ssh/gitlab -o StrictHostKeyChecking=no USERNAME@IP_HOST -p PORT
