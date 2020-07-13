@@ -38,7 +38,7 @@ tsc-source:
 build:
   stage: build
   script:
-    - yarn build
+    - CI=false && yarn build
   artifacts:
     paths:
       - build
