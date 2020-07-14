@@ -52,20 +52,25 @@ deploy:
   dependencies:
     - build
   before_script:
-    - apt-get update -y && apt-get install -y rsync openssh-client
+    - apt-get update -y && apt-get install -y rsync
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY"
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H '10.22.0.188' >> ~/.ssh/known_hosts
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   script:
     - echo "Deploying to server"
-    - ssh -i ~/.ssh/gitlab -o StrictHostKeyChecking=no USERNAME@IP_HOST -p PORT
-    - rsync -avz --progress -a -e "ssh -p PORT" build/ USERNAME@IP_HOST:/var/www/kanban-chatops/build
+    - ssh -i ~/.ssh/config -o StrictHostKeyChecking=no $USERNAME@$IP_HOST -p $KANBAN_PORT
+    - rsync -avz --progress -a -e "ssh -p $KANBAN_PORT" build/ $USERNAME@$IP_HOST:/var/www/kanban-chatops/build
     - echo "Deployed"
   environment:
     name: production
   only:
-    - develop
+      - develop
   tags:
     - mbase-app-runner
