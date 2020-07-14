@@ -106,3 +106,10 @@ interface PostNewColumnKanBan {
   title: string;
   created_by: string;
 }
+
+interface PostNewLabel {
+  board_id: number;
+  color: string;
+  name: string;
+  created_by: string;
+}

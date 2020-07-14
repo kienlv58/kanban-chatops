@@ -6,7 +6,6 @@ import moment from 'moment';
 import { maxBy } from 'lodash';
 // import { axiosInstance } from 'src/utils/fetchHelpers';
 import { DropResult } from 'react-beautiful-dnd';
-import { labels, listKanBan } from './fakeData';
 
 /* ----DEFINE_ACTION_REDUCER----*/
 
@@ -26,10 +25,9 @@ const homeDataSlice = createSlice({
   name: 'kanBanList',
   initialState,
   reducers: {
-    setKanBanData(state, action: PayloadAction<KanBanData>) {
+    setKanBanData(state, action: PayloadAction<{ boardId?: number; listData: ColumnKanBan[] }>) {
       state.boardId = action.payload.boardId;
       state.listData = action.payload.listData;
-      state.listLabel = action.payload.listLabel;
     },
 
     updateListData(state, action: PayloadAction<DropResult>) {
@@ -103,6 +101,9 @@ const homeDataSlice = createSlice({
         updated_at: moment().format('DD/MM/YYYY'),
       });
     },
+    updateLabel(state, action: PayloadAction<{ labels: LabelItem[] }>) {
+      state.listLabel = action.payload.labels;
+    },
     clearData(state, action: PayloadAction) {
       state.boardId = undefined;
       state.listData = [];
@@ -119,6 +120,7 @@ export const {
   deleteCard,
   addNewColumn,
   clearData,
+  updateLabel,
 } = homeDataSlice.actions;
 
 export default homeDataSlice.reducer;
@@ -129,8 +131,7 @@ export const fetchDataKanBanList = (): AppThunk => async dispatch => {
   try {
     // const data = await fetch(process.env.REACT_APP_BASE_URL + userName).then(response => response.json());
     // const { data } = await axiosInstance.get<UserGithub>(userName);
-
-    dispatch(setKanBanData({ boardId: 1, listData: listKanBan, listLabel: labels }));
+    // dispatch(setKanBanData({ boardId: 1, listData: listKanBan, listLabel: labels }));
   } catch (e) {
     console.log('error', e);
   }

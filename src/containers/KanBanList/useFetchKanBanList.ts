@@ -3,7 +3,6 @@ import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { axiosInstance } from 'src/utils/fetchHelpers';
 import apiMap from 'src/utils/apiMap';
-import { labels } from 'src/containers/KanBanList/fakeData';
 import { setKanBanData } from 'src/containers/KanBanList/kanbanSildeData';
 
 const useFetchKanBanList = () => {
@@ -20,7 +19,7 @@ const useFetchKanBanList = () => {
       });
       // dispatch(updateListBoard(data));
       const transformData = data.data.map(item => ({ ...item, cards: item.cards || [] }));
-      dispatch(setKanBanData({ boardId: 1, listData: transformData, listLabel: labels }));
+      dispatch(setKanBanData({ boardId: 1, listData: transformData }));
       console.log('data fetch list', data);
     } catch (e) {
       console.log(e);
