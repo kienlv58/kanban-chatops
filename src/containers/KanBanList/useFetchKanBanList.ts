@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { notification } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { DropResult } from 'react-beautiful-dnd';
+import produce from 'immer';
 import { axiosInstance } from 'src/utils/fetchHelpers';
 import apiMap from 'src/utils/apiMap';
-import { setKanBanData } from 'src/containers/KanBanList/kanbanSildeData';
+import { setKanBanData, selectListData, updateListData } from './kanbanSildeData';
 
 const useFetchKanBanList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const listData = useSelector(selectListData);
   const dispatch = useDispatch();
 
-  const fetchListKanBan = async (boardId: number) => {
+  const fetchListKanBan = async (boardId: number, isShowLoading = true) => {
     try {
-      setIsLoading(true);
+      isShowLoading && setIsLoading(true);
       const { data } = await axiosInstance.get<ListResponse<ColumnKanBan>>(apiMap.list, {
         params: {
           'filter[board_id]': boardId,
@@ -25,7 +28,7 @@ const useFetchKanBanList = () => {
       console.log(e);
       notification.error({ message: e.message.toString() });
     } finally {
-      setIsLoading(false);
+      isShowLoading && setIsLoading(false);
     }
   };
 
@@ -64,8 +67,30 @@ const useFetchKanBanList = () => {
     } finally {
     }
   };
+  const reOrderKanBanList = async (boardId: number, result: DropResult) => {
+    try {
+      dispatch(updateListData(result));
+      const { destination, source, type } = result;
+      const desIndex = destination?.index;
+      const sourceIndex = source.index;
+      if (type === 'COLUMN' && desIndex !== undefined && sourceIndex !== undefined && desIndex !== sourceIndex) {
+        const newData = produce(listData, draftData => {
+          const [sourceItem] = draftData.splice(sourceIndex, 1);
+          draftData.splice(desIndex, 0, sourceItem);
+        });
+        const ids = newData.map(item => item.id);
+        const { data } = await axiosInstance.put<ListResponse<Board>>(`${apiMap.list}/reorder`, { list_ids: ids });
+        console.log('data reorder', data);
+        await fetchListKanBan(boardId, false);
+      }
+    } catch (e) {
+      console.log(e);
+      notification.error({ message: e.message.toString() });
+    } finally {
+    }
+  };
 
-  return { isLoading, fetchListKanBan, createNewKanBanList, editKanBanList, deleteKanBanList };
+  return { isLoading, fetchListKanBan, createNewKanBanList, editKanBanList, deleteKanBanList, reOrderKanBanList };
 };
 
 export default useFetchKanBanList;
