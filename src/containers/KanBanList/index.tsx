@@ -19,7 +19,7 @@ const KanBanList = () => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { fetchListKanBan, isLoading } = useFetchKanBanList();
+  const { fetchListKanBan, isLoading, reOrderKanBanList } = useFetchKanBanList();
 
   useEffect(() => {
     if (params.boardId) fetchListKanBan(Number(params.boardId));
@@ -29,7 +29,9 @@ const KanBanList = () => {
   }, []);
 
   const handleDragEnd = (result: DropResult) => {
-    dispatch(updateListData(result));
+    if (result.type === 'COLUMN') {
+      reOrderKanBanList(Number(params.boardId), result);
+    } else dispatch(updateListData(result));
   };
 
   return (

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal, Input, Row } from 'antd';
+import React from 'react';
+import { Modal, Input, Form } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { addNewColumn } from './kanbanSildeData';
@@ -11,29 +11,44 @@ interface Props {
 }
 
 const AddNewColumn = ({ isShowModal, setIsShowModal }: Props) => {
-  const [title, setTitle] = useState<string>('');
   const params = useParams<{ boardId?: string }>();
   const dispatch = useDispatch();
   const { createNewKanBanList } = useFetchKanBanList();
 
+  const [form] = Form.useForm();
+
   const handleOk = () => {
     setIsShowModal(false);
+    const title = form.getFieldValue('columnTitle');
     dispatch(addNewColumn({ title }));
     createNewKanBanList(Number(params.boardId), { board_id: Number(params.boardId), title, created_by: 'Kienlv' });
-    setTitle('');
+    clearForm();
+  };
+
+  const clearForm = () => {
+    form.resetFields();
+    form.setFields([{ name: 'columnTitle', value: '' }]);
   };
   return (
     <Modal
       visible={isShowModal}
       onOk={handleOk}
-      onCancel={() => setIsShowModal(false)}
-      okButtonProps={{ disabled: title.length === 0 }}
+      onCancel={() => {
+        setIsShowModal(false);
+        clearForm();
+      }}
+      // okButtonProps={{ disabled: title.length === 0 }}
       destroyOnClose={true}
       className={'add-new-column'}>
-      <Row>
+      <Form form={form} onFinish={handleOk} autoComplete={'off'}>
         <label>Title:</label>
-        <Input onChange={value => setTitle(value.target.value)} maxLength={50} />
-      </Row>
+        <Form.Item
+          name="columnTitle"
+          rules={[{ required: true, message: 'column title is required' }]}
+          className={'form-item-card'}>
+          <Input maxLength={50} autoFocus />
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

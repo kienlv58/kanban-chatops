@@ -4,6 +4,7 @@ import { isEmpty, get, toNumber } from 'lodash';
 const COMMON_ERROR_MESSAGE = 'Có lỗi xảy ra!';
 
 export function throwErrorIfEmpty(response: Partial<AxiosResponse>): void {
+  console.log('response', response);
   if (isEmpty(get(response, 'data'))) {
     throw new Error(COMMON_ERROR_MESSAGE);
   }

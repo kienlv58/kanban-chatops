@@ -35,7 +35,7 @@ const AddNewCard = ({ isShowFormAddNew, handleClickShowHideFormAddNew, listId }:
         name="cardTitle"
         rules={[{ required: true, message: 'card title is required' }]}
         className={'form-item-card'}>
-        <Input placeholder={'Enter title for this card'} className={'input-card-title'} />
+        <Input placeholder={'Enter title for this card'} className={'input-card-title'} autoFocus />
       </Form.Item>
       <Form.Item shouldUpdate={true} className={'form-item-card'}>
         {() => (

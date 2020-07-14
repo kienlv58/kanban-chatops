@@ -11,7 +11,7 @@ const useFetchLabelList = () => {
     try {
       const { data } = await axiosInstance.get<ListResponse<LabelItem>>(apiMap.label, {
         params: {
-          // 'filter[board_id]': boardId,
+          'filter[board_id]': boardId,
         },
       });
       dispatch(updateLabel({ labels: data?.data || [] }));
