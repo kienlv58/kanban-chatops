@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Col, Row, Skeleton } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import AppLayout from '../../components/AppLayout';
 import './styles.scss';
@@ -11,6 +11,7 @@ import { selectListData, updateListData, clearData } from './kanbanSildeData';
 import useFetchKanBanList from './useFetchKanBanList';
 import Board from './Board';
 import AddNewColumn from './AddNewColumn';
+import DrawerSetting from './DrawerSetting';
 
 const KanBanList = () => {
   const params = useParams<{ boardId?: string; boardName?: string }>();
@@ -34,11 +35,14 @@ const KanBanList = () => {
   return (
     <AppLayout title={params.boardName}>
       <Row className={'kanban-header'}>
-        <Col className={'board-name'}> Board {params.boardName}</Col>
-        <Button size={'large'} onClick={() => setIsShowModal(true)} className={'btn-add-new'}>
-          <PlusOutlined />
-          {t('addNewBoard')}
-        </Button>
+        <Col className={'board-name'}> {params.boardName}</Col>
+        <Row>
+          <Button size={'large'} onClick={() => setIsShowModal(true)} className={'btn-add-new'}>
+            <PlusOutlined />
+            {t('addNewBoard')}
+          </Button>
+          <DrawerSetting />
+        </Row>
       </Row>
       {isLoading ? (
         <Skeleton />

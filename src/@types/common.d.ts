@@ -23,6 +23,13 @@ interface CardItem {
 
 interface LabelItem {
   id: number;
-  name: string;
+  board_id: number;
   color: string;
+  name: string;
+  created_by: string;
+  updated_by?: string;
+  deleted_by?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at?: string;
 }
