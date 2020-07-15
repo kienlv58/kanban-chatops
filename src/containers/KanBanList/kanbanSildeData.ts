@@ -4,8 +4,6 @@ import { AppThunk } from 'redux/store';
 import { RootState } from 'redux/rootReducer';
 import moment from 'moment';
 import { maxBy } from 'lodash';
-// import { axiosInstance } from 'src/utils/fetchHelpers';
-import { DropResult } from 'react-beautiful-dnd';
 
 /* ----DEFINE_ACTION_REDUCER----*/
 
@@ -30,59 +28,49 @@ const homeDataSlice = createSlice({
       state.listData = action.payload.listData;
     },
 
-    updateListData(state, action: PayloadAction<DropResult>) {
-      console.log('result', action.payload);
-      const { destination, source, draggableId } = action.payload;
-      const desIndex = destination?.index;
-      const sourceIndex = source.index;
-      if (
-        action.payload.type === 'COLUMN' &&
-        desIndex !== undefined &&
-        sourceIndex !== undefined &&
-        desIndex !== sourceIndex
-      ) {
-        const [sourceItem] = state.listData.splice(sourceIndex, 1);
-
-        state.listData.splice(desIndex, 0, sourceItem);
-      } else if (destination && destination?.droppableId !== source.droppableId) {
-        const listSourceIndex = state.listData.findIndex(item => {
-          return item.id.toString() === source.droppableId;
-        });
-        const listDestIndex = state.listData.findIndex(item => {
-          return item.id.toString() === destination?.droppableId;
-        });
-
-        if (listDestIndex === -1 || listSourceIndex === -1) return;
-        const dragItem = state.listData[listSourceIndex].cards.find(
-          item => item.id.toString() === draggableId.toString(),
-        );
-        if (!dragItem) return;
-        const [removeItem] = state.listData[listSourceIndex].cards.splice(source.index, 1);
-        state.listData[listDestIndex].cards.splice(destination?.index, 0, removeItem);
-      }
+    reOrderKanBanLocal(state, action: PayloadAction<ColumnKanBan[]>) {
+      state.listData = action.payload;
     },
-    createNewCard(state, action: PayloadAction<{ listId: number; title: string }>) {
-      const findListToUpdate = state.listData.find(item => item.id === action.payload.listId);
+    moveCardLocal(state, action: PayloadAction<ColumnKanBan[]>) {
+      state.listData = action.payload;
+    },
+    reOrderCardLocal(state, action: PayloadAction<ColumnKanBan[]>) {
+      state.listData = action.payload;
+    },
+    createNewCardLocal(state, action: PayloadAction<PostNewCard>) {
+      const findListToUpdate = state.listData.find(item => item.id === action.payload.list_id);
       if (findListToUpdate) {
         findListToUpdate.cards.push({
           id: Math.random(),
-          listId: action.payload.listId,
+          list_id: action.payload.list_id,
           title: action.payload.title,
+          description: action.payload.description,
           position: maxBy(findListToUpdate.cards, 'position')?.position || 0 + 1,
+          labels: [],
+          created_by: action.payload.created_by,
+          created_at: moment().format('DD/MM/YYYY'),
         });
       }
     },
-    updateCard(state, action: PayloadAction<{ listId: number; cardItem: CardItem }>) {
-      const { listId, cardItem } = action.payload;
-      const findListToUpdateIndex = state.listData.findIndex(item => item.id === listId);
+    updateCardLocal(state, action: PayloadAction<{ cardId: number; cardItemPost: PostNewCard }>) {
+      const { cardItemPost, cardId } = action.payload;
+      const findListToUpdateIndex = state.listData.findIndex(item => item.id === cardItemPost.list_id);
       if (findListToUpdateIndex > -1) {
-        const cardUpdateIndex = state.listData[findListToUpdateIndex].cards.findIndex(card => card.id === cardItem.id);
+        const cardUpdateIndex = state.listData[findListToUpdateIndex].cards.findIndex(card => card.id === cardId);
         if (cardUpdateIndex > -1) {
-          state.listData[findListToUpdateIndex].cards[cardUpdateIndex] = cardItem;
+          const findLabel = state.listLabel.find(item => item.id === cardItemPost.label_ids?.[0]);
+          state.listData[findListToUpdateIndex].cards[cardUpdateIndex] = {
+            ...state.listData[findListToUpdateIndex].cards[cardUpdateIndex],
+            title: cardItemPost.title,
+            description: cardItemPost.description,
+            assign: cardItemPost.assign,
+            due_date: cardItemPost.due_date,
+            labels: (findLabel && [findLabel]) || [],
+          };
         }
       }
     },
-    deleteCard(state, action: PayloadAction<{ listId: number; cardId: number }>) {
+    deleteCardLocal(state, action: PayloadAction<{ listId: number; cardId: number }>) {
       const findListToUpdate = state.listData.find(item => item.id === action.payload.listId);
       if (findListToUpdate) {
         const findIndexCardDelete = findListToUpdate.cards.findIndex(item => item.id === action.payload.cardId);
@@ -114,13 +102,15 @@ const homeDataSlice = createSlice({
 
 export const {
   setKanBanData,
-  updateListData,
-  createNewCard,
-  updateCard,
-  deleteCard,
+  createNewCardLocal,
+  updateCardLocal,
+  deleteCardLocal,
   addNewColumn,
   clearData,
   updateLabel,
+  moveCardLocal,
+  reOrderCardLocal,
+  reOrderKanBanLocal,
 } = homeDataSlice.actions;
 
 export default homeDataSlice.reducer;

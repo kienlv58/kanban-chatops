@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Row, Col, Button, Tag, Typography, Descriptions, Modal, Form, Dropdown, Menu, DatePicker } from 'antd';
 import {
   UserOutlined,
@@ -8,8 +8,9 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectLabelById, selectListLabel, updateCard, deleteCard } from './kanbanSildeData';
+import { useSelector } from 'react-redux';
+import { selectLabelById, selectListLabel } from './kanbanSildeData';
+import useFetchKanBanList from './useFetchKanBanList';
 import './styles.scss';
 
 const { Link } = Typography;
@@ -27,23 +28,40 @@ interface Props {
 const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
   const [disabled, setDisable] = useState(true);
   const [showPopupDate, setShowPopupDate] = useState(false);
-  const label = useSelector(selectLabelById(card.labelId));
+
+  const [infoCard, setInfoCard] = useState<{ assign?: string; labelSelected?: LabelItem; due_date?: string }>();
+
+  const label = useSelector(selectLabelById(card.labels?.[0]?.id));
   const labels = useSelector(selectListLabel);
-  const dispatch = useDispatch();
+
+  const { editCard, deleteCard } = useFetchKanBanList();
   const [form] = Form.useForm();
 
-  const resetModal = () => {
+  useEffect(() => {
+    setInfoCard({ assign: card.assign, labelSelected: label, due_date: card.due_date });
+  }, [card, label]);
+
+  const resetModal = async () => {
     hideModal();
     setDisable(true);
   };
   const handleCancel = () => {
     resetModal();
     form.resetFields();
+    setInfoCard({ assign: card.assign, labelSelected: label, due_date: card.due_date });
   };
   const handleOk = () => {
     const title = form.getFieldValue('cardTitle');
     const description = form.getFieldValue('cardDescription');
-    dispatch(updateCard({ listId, cardItem: { ...card, title, description } }));
+    editCard(card.id, {
+      list_id: listId,
+      created_by: card.created_by,
+      title,
+      description,
+      assign: infoCard?.assign,
+      label_ids: (infoCard?.labelSelected?.id && [infoCard?.labelSelected?.id]) || [],
+      due_date: infoCard?.due_date,
+    });
     resetModal();
   };
 
@@ -51,7 +69,7 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
     return (
       <Menu
         onClick={value => {
-          dispatch(updateCard({ listId, cardItem: { ...card, assigned: value.key } }));
+          setInfoCard({ ...infoCard, assign: value.key });
         }}>
         <Menu.Item key={'kienlv'}>kienlv</Menu.Item>
         <Menu.Item key={'maiht'}>maiht</Menu.Item>
@@ -67,9 +85,9 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
-      onOk() {
-        dispatch(deleteCard({ listId, cardId: card.id }));
-        resetModal();
+      async onOk() {
+        await deleteCard(card.id, listId);
+        return resetModal();
       },
       // onCancel() {},
     });
@@ -80,7 +98,8 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
       <Menu
         className={'menu-label'}
         onClick={value => {
-          dispatch(updateCard({ listId, cardItem: { ...card, labelId: Number(value.key) } }));
+          const findLabelSelect = labels.find(lb => lb.id.toString() === value.key);
+          if (findLabelSelect) setInfoCard({ ...infoCard, labelSelected: findLabelSelect });
         }}>
         {labels.map(item => (
           <Menu.Item className={'item-label'} key={item.id}>
@@ -125,20 +144,20 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
         </Form>
 
         <Descriptions>
-          {card.assigned && (
+          {infoCard?.assign && (
             <Descriptions.Item label="Assigned">
-              <Link> {card.assigned}</Link>
+              <Link> {infoCard?.assign}</Link>
             </Descriptions.Item>
           )}
-          {label && (
+          {infoCard?.labelSelected && (
             <Descriptions.Item label="Label">
-              <Tag color={label.color}>{label.name}</Tag>
+              <Tag color={infoCard?.labelSelected.color}>{infoCard?.labelSelected.name}</Tag>
             </Descriptions.Item>
           )}
-          {card.dueDate && (
+          {infoCard?.due_date && (
             <Descriptions.Item label="DueDate">
               <Tag color="#ec9488">
-                <FieldTimeOutlined /> {card.dueDate}
+                <FieldTimeOutlined /> {infoCard?.due_date}
               </Tag>
             </Descriptions.Item>
           )}
@@ -173,10 +192,11 @@ const CardModal = ({ card, isShowModal, hideModal, listId }: Props) => {
           <DatePicker
             format={'DD/MM/YYYY'}
             className={'date-picker'}
+            // value={infoCard?.due_date}
             open={showPopupDate}
             onChange={(date, dateString) => {
               setShowPopupDate(false);
-              dispatch(updateCard({ listId, cardItem: { ...card, dueDate: dateString } }));
+              setInfoCard({ ...infoCard, due_date: dateString });
             }}
             onOpenChange={open => {
               if (!open) setShowPopupDate(false);

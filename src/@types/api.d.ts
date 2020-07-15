@@ -67,6 +67,36 @@ interface ColumnKanBan {
   cards: CardItem[];
 }
 
+interface CardItem {
+  id: number;
+  list_id: number;
+  title: string;
+  description?: string;
+  position: number;
+  assign?: string;
+  due_date?: string;
+  created_by: string;
+  updated_by?: string;
+  deleted_by?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at?: string;
+  labels: LabelItem[];
+}
+
+interface LabelItem {
+  id: number;
+  board_id: number;
+  color: string;
+  name: string;
+  created_by: string;
+  updated_by?: string;
+  deleted_by?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
 interface Links {
   first: string;
   last: string;
@@ -112,4 +142,14 @@ interface PostNewLabel {
   color: string;
   name: string;
   created_by: string;
+}
+
+interface PostNewCard {
+  list_id: number;
+  title: string;
+  description?: string;
+  assign?: string;
+  due_date?: string;
+  created_by: string;
+  label_ids?: number[];
 }

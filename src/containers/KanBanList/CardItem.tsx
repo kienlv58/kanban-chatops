@@ -17,7 +17,7 @@ interface Props {
 
 const CardItem = ({ card, index, listId, dragProvided }: Props) => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
-  const label = useSelector(selectLabelById(card.labelId));
+  const label = useSelector(selectLabelById(card.labels?.[0]?.id));
 
   const hideModal = () => {
     setIsShowModal(false);
@@ -36,9 +36,9 @@ const CardItem = ({ card, index, listId, dragProvided }: Props) => {
         <Row>{card.title}</Row>
         <Row>
           <Row className={'wrapper-label'}>
-            {card.dueDate && (
+            {card.due_date && (
               <Tag color="#ec9488" className={'card-label'}>
-                <FieldTimeOutlined /> {card.dueDate}
+                <FieldTimeOutlined /> {card.due_date}
               </Tag>
             )}
             {label && (
@@ -47,13 +47,13 @@ const CardItem = ({ card, index, listId, dragProvided }: Props) => {
               </Tag>
             )}
           </Row>
-          {card.assigned && (
+          {card.assign && (
             <Avatar
               className={'avatar-user'}
               gap={1}
               // src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
             >
-              {card.assigned[0]}
+              {card.assign[0]}
             </Avatar>
           )}
         </Row>
