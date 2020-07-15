@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import AppLayout from '../../components/AppLayout';
 import './styles.scss';
-import { selectListData, updateListData, clearData } from './kanbanSildeData';
+import { selectListData, clearData } from './kanbanSildeData';
 import useFetchKanBanList from './useFetchKanBanList';
 import Board from './Board';
 import AddNewColumn from './AddNewColumn';
@@ -19,7 +19,7 @@ const KanBanList = () => {
   const [isShowModal, setIsShowModal] = useState<boolean>(false);
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { fetchListKanBan, isLoading, reOrderKanBanList } = useFetchKanBanList();
+  const { fetchListKanBan, isLoading, reOrderKanBanList, reOrderCard, moveCard } = useFetchKanBanList();
 
   useEffect(() => {
     if (params.boardId) fetchListKanBan(Number(params.boardId));
@@ -29,9 +29,16 @@ const KanBanList = () => {
   }, []);
 
   const handleDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+    const desIndex = destination?.index;
+    const sourceIndex = source.index;
     if (result.type === 'COLUMN') {
       reOrderKanBanList(Number(params.boardId), result);
-    } else dispatch(updateListData(result));
+    } else if (result.type === 'CARD' && destination && desIndex !== undefined && sourceIndex !== undefined) {
+      if (destination?.droppableId !== source.droppableId) {
+        moveCard(result);
+      } else if (destination?.droppableId === source.droppableId) reOrderCard(result);
+    }
   };
 
   return (

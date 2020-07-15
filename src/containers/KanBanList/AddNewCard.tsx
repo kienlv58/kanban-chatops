@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, Row } from 'antd';
-import { useDispatch } from 'react-redux';
 import { CloseOutlined } from '@ant-design/icons';
-import { createNewCard } from './kanbanSildeData';
+import useFetchKanBanList from './useFetchKanBanList';
 
 interface Props {
   handleClickShowHideFormAddNew: () => void;
@@ -11,8 +10,7 @@ interface Props {
 }
 
 const AddNewCard = ({ isShowFormAddNew, handleClickShowHideFormAddNew, listId }: Props) => {
-  const dispatch = useDispatch();
-
+  const { createNewCard } = useFetchKanBanList();
   const [form] = Form.useForm();
 
   const handleClickShowHideAddNew = () => {
@@ -22,7 +20,7 @@ const AddNewCard = ({ isShowFormAddNew, handleClickShowHideFormAddNew, listId }:
 
   const handleAddNewCard = () => {
     const title = form.getFieldValue('cardTitle');
-    dispatch(createNewCard({ listId, title }));
+    createNewCard({ list_id: listId, title, created_by: 'kienlv' });
     form.resetFields();
     handleClickShowHideFormAddNew();
   };
