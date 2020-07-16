@@ -12,12 +12,12 @@ import CardItem from 'src/containers/KanBanList/CardItem';
 
 const getBackgroundColor = (isDraggingOver: boolean, isDraggingFrom: boolean): string => {
   if (isDraggingOver) {
-    return '#009bc1';
+    return '';
   }
   if (isDraggingFrom) {
-    return '#cecbd2';
+    return '';
   }
-  return 'rgba(232, 232, 232, 0.71)';
+  return '';
 };
 
 interface Props {
@@ -44,7 +44,7 @@ const CardList = ({ listId, listType, cards = [], style, children }: Props) => {
           }}>
           <div className={'scroll-wrapper'}>
             <div ref={dropProvided.innerRef} className={'card-list-content'}>
-              <>
+              <div className={'card-exist'}>
                 {children}
                 {cards.map((card: CardItem, index: number) => (
                   <Draggable draggableId={card.id.toString()} index={index} key={card.id}>
@@ -60,7 +60,7 @@ const CardList = ({ listId, listType, cards = [], style, children }: Props) => {
                   </Draggable>
                 ))}
                 {dropProvided.placeholder}
-              </>
+              </div>
             </div>
           </div>
         </Row>

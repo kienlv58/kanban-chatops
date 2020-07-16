@@ -61,10 +61,14 @@ const Home = () => {
   const renderHeaderItem = (item: Board) => {
     return (
       <Row className={'item-header'}>
-        <Row>{item.title}</Row>
-        <Dropdown overlay={() => menu(item)} trigger={['click']} placement={'bottomRight'}>
-          <MoreOutlined className={'icon-more'} />
-        </Dropdown>
+        <Row className={'wrapper-title'}>
+          <span className={'title'}>{item.title}</span>
+        </Row>
+        <Row className={'icon-menu'}>
+          <Dropdown overlay={() => menu(item)} trigger={['click']} placement={'bottomRight'}>
+            <MoreOutlined className={'icon-more'} />
+          </Dropdown>
+        </Row>
       </Row>
     );
   };
@@ -82,32 +86,34 @@ const Home = () => {
   };
 
   return (
-    <AppLayout>
-      <Row className={'home-page'}>
-        <Row className={'header'}>
-          <Col className={'title-header'}>{t('yourBoard')}</Col>
-          <Button
-            className={'btn-add-new'}
-            size={'large'}
-            onClick={() => setDataModal({ visible: true, board: undefined })}>
-            <PlusOutlined />
-            {t('addNewBoard')}
-          </Button>
+    <AppLayout isShowSearch>
+      <Row className={'wrapper-home'}>
+        <Row className={'home-page'}>
+          <Row className={'header'}>
+            <Col className={'title-header'}>{t('yourBoard')}</Col>
+            <Button
+              className={'btn-add-new'}
+              size={'large'}
+              onClick={() => setDataModal({ visible: true, board: undefined })}>
+              <PlusOutlined />
+              {t('addNewBoard')}
+            </Button>
+          </Row>
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            <List
+              dataSource={listBoard?.data || []}
+              itemLayout={'horizontal'}
+              style={{ marginTop: 20, flex: 1 }}
+              rowKey={item => item.id.toString()}
+              grid={{ gutter: 16, column: 4 }}
+              renderItem={renderItem}
+              split
+            />
+          )}
+          <AddNewBoard dataModal={dataModal} setDataModal={setDataModal} />
         </Row>
-        {isLoading ? (
-          <Skeleton />
-        ) : (
-          <List
-            dataSource={listBoard?.data || []}
-            itemLayout={'horizontal'}
-            style={{ marginTop: 20, flex: 1 }}
-            rowKey={item => item.id.toString()}
-            grid={{ gutter: 16, column: 4 }}
-            renderItem={renderItem}
-            split
-          />
-        )}
-        <AddNewBoard dataModal={dataModal} setDataModal={setDataModal} />
       </Row>
     </AppLayout>
   );
