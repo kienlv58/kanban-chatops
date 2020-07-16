@@ -1,9 +1,14 @@
+.wrapper-home {
+  justify-content: center;
+}
 .home-page {
+  width: 1200px;
   .header {
     justify-content: center;
     align-items: center;
     width: 100%;
     margin-top: 20px;
+
     .title-header {
       flex: 1;
       font-size: 36px;
@@ -16,18 +21,56 @@
       box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2);
     }
   }
+
   .card-description {
     height: 100px;
     overflow: auto;
   }
 
   .board-item {
+    .ant-card-head {
+      padding: 0px;
+      height: 48px;
+      .ant-card-head-wrapper {
+        height: 100%;
+        .ant-card-head-title {
+          display: flex;
+          height: 100%;
+          padding: 0px;
+        }
+      }
+    }
     .item-header {
       justify-content: space-between;
       align-items: center;
+      flex: 1;
+      width: 100%;
+
+      .wrapper-title {
+        flex: 1;
+        min-width: 0;
+        .title {
+          padding-left: 24px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .icon-menu {
+        white-space: nowrap;
+        min-width: 40px;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+      }
+
       .icon-more {
-        padding: 2px 2px;
         font-size: 20px;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
 

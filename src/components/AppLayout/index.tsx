@@ -12,6 +12,7 @@ const { Search } = Input;
 interface Props {
   children: ReactNode;
   title?: string;
+  isShowSearch?: boolean;
 }
 
 const AppLayout = (props: Props) => {
@@ -49,15 +50,20 @@ const AppLayout = (props: Props) => {
             placeholder="input search text"
             className={'search'}
             size={'small'}
-            onSearch={value => console.log(value)}
+            style={{ visibility: props.isShowSearch ? 'visible' : 'hidden' }}
+            // onSearch={value => console.log(value)}
           />
         </Row>
-        <Row className={'header-name'} onClick={() => history.push('/')}>
+        <Row className={'header-name'}>
           <img
             src={require('src/components/AppLayout/Logo.png')}
+            className={'nav-home'}
             style={{ width: 50, height: 50, borderRadius: 30, backgroundColor: 'white', marginRight: 5 }}
+            onClick={() => history.push('/')}
           />
-          <Row onClick={() => history.push('/')}>{t('appName')}</Row>
+          <Row onClick={() => history.push('/')} className={'nav-home'}>
+            {t('appName')}
+          </Row>
         </Row>
         <Dropdown overlay={menu} trigger={['click']} className={'abc'}>
           <Avatar

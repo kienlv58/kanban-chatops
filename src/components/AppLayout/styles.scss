@@ -47,7 +47,10 @@
       color: white;
       font-size: 25px;
       font-weight: bold;
-      cursor: pointer;
+
+      .nav-home {
+        cursor: pointer;
+      }
     }
     .search {
       width: 200px;
@@ -66,7 +69,10 @@
   }
   .ant-layout-content {
     width: 100%;
-    max-width: 1200px;
+    //max-width: 1200px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
   }
   .ant-layout-footer {
     @extend .header-footer-base;

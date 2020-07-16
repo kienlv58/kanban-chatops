@@ -75,6 +75,7 @@ const DrawerSetting = () => {
       okType: 'danger',
       cancelText: 'No',
       onOk() {
+        handleCancel();
         return deleteLabel(Number(params.boardId), labelId);
       },
       // onCancel() {},
