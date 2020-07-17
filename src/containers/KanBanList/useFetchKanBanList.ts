@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { notification } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropResult } from 'react-beautiful-dnd';
 import produce from 'immer';
+import { debounce } from 'lodash';
 import { useParams } from 'react-router-dom';
 import { axiosInstance } from 'src/utils/fetchHelpers';
 import apiMap from 'src/utils/apiMap';
@@ -42,6 +43,8 @@ const useFetchKanBanList = () => {
       isShowLoading && setIsLoading(false);
     }
   };
+
+  const fetchListKanBanWithDelay = useRef(debounce(fetchListKanBan, 3000));
 
   const createNewKanBanList = async (boardId: number, bodyData: PostNewColumnKanBan) => {
     try {
@@ -92,7 +95,7 @@ const useFetchKanBanList = () => {
       dispatch(reOrderKanBanLocal(newDataList));
       const ids = newDataList.map(item => item.id);
       await axiosInstance.put<ListResponse<Board>>(`${apiMap.list}/reorder`, { list_ids: ids });
-      await fetchListKanBan(boardId, false);
+      await fetchListKanBanWithDelay.current(boardId, false);
     } catch (e) {
       console.log(e);
       notification.error({ message: e.message.toString() });
@@ -160,7 +163,8 @@ const useFetchKanBanList = () => {
 
         const ids = newDataCards.map(item => item.id);
         await axiosInstance.put(`${apiMap.card}/reorder`, { card_ids: ids });
-        await fetchListKanBan(Number(params.boardId), false);
+
+        await fetchListKanBanWithDelay.current(Number(params.boardId), false);
       }
     } catch (e) {
       console.log(e);
@@ -199,7 +203,7 @@ const useFetchKanBanList = () => {
         card_id: draggableId,
         to_list_cards: newIdsDestination,
       });
-      await fetchListKanBan(Number(params.boardId), false);
+      await fetchListKanBanWithDelay.current(Number(params.boardId), false);
     } catch (e) {
       console.log(e);
       notification.error({ message: e.message.toString() });
