@@ -18,7 +18,7 @@ const Column = ({ index, column }: Props) => {
   };
 
   return (
-    <Draggable index={index} draggableId={column.id.toString()}>
+    <Draggable index={index} draggableId={`COLUMN_${column.id}`}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <div className={'container'} {...provided.draggableProps} ref={provided.innerRef}>
           <Header
